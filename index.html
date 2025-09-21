@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Gift Box 🎁</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #f9c5d1, #fbc2eb);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .gift-box {
+      width: 150px;
+      height: 150px;
+      background: #ff4d6d;
+      border-radius: 15px;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .gift-box::before {
+      content: "🎀";
+      position: absolute;
+      font-size: 2em;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .hidden {
+      display: none;
+    }
+    .gift-cards {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+    .card {
+      width: 120px;
+      height: 80px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.1);
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.5em;
+      color: #fff;
+      font-weight: bold;
+    }
+    .confetti {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    iframe {
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+  <h1>🎂 Happy Birthday, SIster! 🎂</h1>
+  <div class="gift-box" id="giftBox"></div>
+
+  <div class="gift-cards hidden" id="giftCards"></div>
+
+  <div class="result" id="result"></div>
+
+  <div id="music" class="hidden">
+    <!-- Replace the link with your YouTube video/playlist -->
+    <iframe width="300" height="170" src="https://www.youtube.com/watch?v=osKLrBxqkuA&list=RDosKLrBxqkuA&start_radio=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+
+  <canvas class="confetti hidden" id="confetti"></canvas>
+
+  <script>
+    const giftBox = document.getElementById("giftBox");
+    const giftCards = document.getElementById("giftCards");
+    const result = document.getElementById("result");
+    const music = document.getElementById("music");
+    const confettiCanvas = document.getElementById("confetti");
+    const ctx = confettiCanvas.getContext("2d");
+
+    const gifts = [
+      "cat food XD",
+      "Jewelry? not too expensive XD",
+      "Coffee Cup?",
+      "Customized Phone Cover",
+      "Clothes"
+    ];
+
+    giftBox.addEventListener("click", () => {
+      giftBox.classList.add("hidden");
+      giftCards.classList.remove("hidden");
+
+      gifts.forEach((gift, index) => {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.textContent = "🎁 Mystery Gift";
+        card.onclick = () => revealGift(gift);
+        giftCards.appendChild(card);
+      });
+    });
+
+    function revealGift(gift) {
+      giftCards.classList.add("hidden");
+      result.textContent = `You got: ${gift}! 💖`;
+      music.classList.remove("hidden");
+      startConfetti();
+    }
+
+    // Confetti effect
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+    function startConfetti() {
+      confettiCanvas.classList.remove("hidden");
+      let particles = [];
+      for (let i = 0; i < 100; i++) {
+        particles.push({
+          x: Math.random() * confettiCanvas.width,
+          y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+          r: Math.random() * 6 + 4,
+          d: Math.random() * 100,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+          tilt: Math.floor(Math.random() * 10) - 10
+        });
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+        particles.forEach(p => {
+          ctx.beginPath();
+          ctx.fillStyle = p.color;
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+          ctx.fill();
+        });
+        update();
+      }
+
+      function update() {
+        particles.forEach(p => {
+          p.y += Math.cos(p.d) + 1 + p.r/2;
+          p.x += Math.sin(p.d);
+
+          if (p.y > confettiCanvas.height) {
+            p.y = -10;
+            p.x = Math.random() * confettiCanvas.width;
+          }
+        });
+      }
+
+      setInterval(draw, 20);
+    }
+  </script>
+</body>
+</html>
